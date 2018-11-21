@@ -7,9 +7,41 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
 ```
 
 ```{r}
+salmon <- read.csv("salmon.csv")
+```
+
+```{r}
+salmon_2 <- ggplot(salmon, aes(x = year, y = salmon_fresh)) +
+  geom_point(colour = "gray40")
+
+salmon_2
+
+#Describing the relationship between salmon imports and years with a linear regression makes sense as there is a relatively linear increase over time, not an exponential one similair to bacteria. Salmon imports will vary from year to year making sense for a linear regression to be performed. The only concern I would have is the possibility of outliers influencing the data tremendously. 
+```
+
+```{r}
+salmon_model <- lm(salmon_fresh ~ year, data = salmon)
+
+salmon_model
+
+#Based on Linear Regression function, the function would be y = -15059597 + 7588x (Imports = tons = -400 + 25(Year)
+#Slope: As x (number of years) increases by 1, the y value (salmon imports per 1000) will increase by 7588 (1000 pounds)
+#Y-Intercept: At year 0, there is -15059597 (1000 pounds) of salmon 
+#Y-intercept is concerning as it is a negative big value compared to the postive y values of salmon imports per 1000 pounds making it extremely diffucult if not downright impossible to predict past previous values. You can't predict previous values with a negative y intercept 
+```
+
+```{r}
+par(mfrow= c(2,2))
+plot(salmon_model)
+
+#Resdiuals appear to be randomly distributed around the gray horizontal dashed line making the assumption of homoscedastictic not violated 
+#Normal QQ-Plot sow all of the dots above the gray dash horizontal line making it normally distrubuted 
+#Outliers are present in Residauls vs Leverage and are outside of Cook's Distance (Point 24 and Point 28) meaning they are influencing the data 
 
 ```
 
