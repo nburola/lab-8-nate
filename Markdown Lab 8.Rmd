@@ -45,3 +45,66 @@ plot(salmon_model)
 
 ```
 
+```{r}
+summary(salmon_model)
+
+#H0: Year will not significantly predict salmon imports 
+#HA: Year will significantly predict salmon imports
+#P-value is < 2.2e-16 (p < 0.05)
+#Reject null hypothesis, accept altenative (Year would significantly predict salmon imports)
+
+#R^2 squared value of 0.9483
+#94.83% of variance in salmon imports per 1000 pounds is explained by year 
+
+#Proportion that is not explained by R^2 squared value in salmon imports NOT explained by year is 1-0.9483 = 0.0157 
+
+```
+
+```{r}
+salmon_final_graph <- ggplot(salmon, aes (x= year, y = salmon_fresh)) + 
+  geom_point() + 
+  geom_smooth(method = lm, se = TRUE, size = 0.5, color = "gray20") + 
+  theme_bw() + 
+  scale_x_continuous(expand = c(0,0), limits = c(1990, 2017)) + 
+  labs(x = "Year", y = "U.S. Annual Fresh Salmon Imports\n(1000 pounds)")
+
+#geom_point is for a scatterplot with a 95% confidencec interval for predictions 
+#geom_smooth aids the eye in seeing patterns in the presence of overplotting 
+#method = lm, smoothing method(function) to use, accepts either character vector 
+#se = TRUE, displays confidence interval around se with TRUE being the default (95% Confidence Interval)
+#size and color are just aesthetics 
+
+salmon_final_graph
+
+```
+
+```{r}
+#Creating a new data frame containing the "new values" that you want to make predictions for, feed that into the predict() function 
+
+new_years <- data.frame(year = c(2022, 2024, 2026, 2028))
+
+future_predict <- predict(salmon_model, newdata = new_years, interval = "confidence")
+future_predict 
+
+predictions <- data.frame(new_years, future_predict)
+predictions
+```
+
+```{r}
+#Finding Pearson's R Correlation 
+
+salmon_test <- cor.test(salmon$year, salmon$salmon_fresh)
+
+salmon_test
+
+#Pearson's R correlation is 0.973805 making it a STRONG, POSTIVE correlation between year and salmon imports per 1000 pounds 
+
+
+```
+
+```{r}
+#Writing the final statement 
+```
+**Publication final statement**: "Year significantly predicts fresh Atlantic salmon imports ( per 1000 pounds) (b = 7.85e+03, t(26) = 21.84, p < 0.001) with a strong, postive correlation between the two (Pearson's r = 0.97). The overall model (width = 7.588e+03 (length) = 1.506e+07; both in 1000 pounds) explains a significant amount of variance in fresh Atlatnic salmon imports (F(26) = 476.9, p < 0.001, R$^2$ = 0.95)". 
+
+
